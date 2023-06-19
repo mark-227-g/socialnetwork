@@ -1,12 +1,12 @@
 const {Schema, model} = require('mongoose');
-const Thought = require('./thought')
+const Thought = require('./thought');
 
-const userSchema = new mongoose.Schema ({
+const userSchema = new Schema ({
     name: {
         type:String, 
         required:true, 
         unique:true, 
-        trim:true
+        trim:true,
     },
     email: {
         type:String, 
@@ -14,9 +14,9 @@ const userSchema = new mongoose.Schema ({
         unique:true,
         match: [/.+\@.+\..+/,'Invalid email'],
     },
-    thoughts:[Thought],
-    friends: [User],
-    },
+    thoughts:[],
+    friends: [],
+},
 {
     toJSON: {
         virtuals:true,

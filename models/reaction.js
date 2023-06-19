@@ -1,6 +1,7 @@
-const {Schema, Types} = require('mongoose');
+const {Schema, model} = require('mongoose');
 
-const reactionSchema = new mongoose.Schema ({
+const reactionSchema = new Schema (
+    {
     reactionId: {
         type: Schema.Types.ObjectId,
         default: () => Types.ObjectId(),
@@ -9,23 +10,22 @@ const reactionSchema = new mongoose.Schema ({
         type:String, 
         required:true,  
         trim:true,
-        maxLength:[280,'Too many characters']
+        maxLength:[280,'Too many characters'],
     },
     createdAt: {
         type: Date,
         default: Date.now,
-      },
+    },
     username: {
         type:String, 
         require:true},
-    }
-
-{
-    toJSON: {
-        getters:true,
     },
-    id:false,
-}
+    {
+        toJSON: {
+            getters:true,
+        },
+        id:false,
+    }
 );
 
 module.exports = reactionSchema;
