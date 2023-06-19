@@ -8,9 +8,9 @@ connection.on('error', (err) => err);
 
 connection.once('open', async () => {
   console.log('connected');
-  //await Reactions.deleteMany({});
-  //await Thought.deleteMany({});
-  //await User.deleteMany({});
+  //await Reaction.collection.deleteMany();
+  await Thought.deleteMany({});
+  await User.deleteMany({});
 
   const users = [];
   const thoughts = getRandomThoughts(10);
