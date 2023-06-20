@@ -1,0 +1,73 @@
+const { User, Thought } = require('../models');
+module.exports = {
+    // Get all thoughts
+    async getAllThoughts(req, res) {
+      try {
+        const thoughts = await Thought.find();
+        res.json(thoughts);
+      } catch (err) {
+        res.status(500).json(err);
+      }
+    },
+    // Get a single thought
+    async getThoughtById(req, res) {
+      try {
+        const thought = await Thought.findOne({ _id: req.params.thoughtId })
+          .select('-__v');
+  console.log(req.params.thoughtId)
+  console.log("thought" + thought)
+        if (!thought) {
+          return res.status(404).json({ message: 'No thought with that ID' });
+        }
+  
+        res.json(thought);
+      } catch (err) {
+        res.status(500).json(err);
+      }
+    },
+          // create a new thought
+  async createThought(req, res) {
+    try {
+      const thought = await Thought.create(req.body);
+      res.json(thought);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+    // Updates and application using the findOneAndUpdate method. Uses the ID, and the $set operator in mongodb to inject the request body. Enforces validation.
+    async updateThought(req, res) {
+      try {
+        const thought = await Thought.findOneAndUpdate(
+          { _id: req.params.thoughtId },
+          { $set: req.body },
+          { runValidators: true, new: true }
+        );
+  
+        if (!thought) {
+          return res.status(404).json({ message: 'No thought with this id!' });
+        }
+  
+        res.json(thought);
+      } catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+      }
+    },
+    async deleteThought(req, res) {
+      try {
+        const thought = await Thought.findOneAndRemove({ _id: req.params.thoughtId });
+  
+        if (!thought) {
+          return res.status(404).json({ message: 'No thought with this id!' });
+        }
+        res.json({ message: 'thought successfully deleted!' });
+      } catch (err) {
+        res.status(500).json(err);
+      }
+    }
+
+
+
+
+
+}
