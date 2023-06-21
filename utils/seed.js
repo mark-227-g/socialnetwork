@@ -1,23 +1,21 @@
 const connection = require('../config/connection');
 const { User,Thought,Reaction } = require('../models');
-//const Thought = require('../models/thought');
-//const Reaction = require('../models/reaction');
-const { getRandomName, getRandomThoughts, getRandomReactions} = require('./data');
+const { genRandomName, genRandomSentence,genRandomIndex} = require('./data');
 
-connection.on('error', (err) => err);
+// Start the seeding runtime timer
+console.time('seeding');
 
 connection.once('open', async () => {
-  console.log('connected');
-  //await Reaction.collection.deleteMany();
+  await Reaction.deleteMany();
   await Thought.deleteMany({});
   await User.deleteMany({});
 
   const users = [];
-  const thoughts = getRandomThoughts(10);
-  const reactions = getRandomReactions(2);
+  const thoughts = [];
+  const reactions = [];
 
   for (let i = 0; i < 20; i++) {
-    const name = getRandomName();
+    const name = genRandomName();
     users.push({
       name,
       email:name.replace(' ','.')+'@abcxyz.edu',
@@ -25,17 +23,43 @@ connection.once('open', async () => {
   }
 
   await User.collection.insertMany(users);
-  await Thought.collection.insertMany(thoughts);
-  //await Reaction.collection.insertMany(reactions);
-  //await Reaction.collection.insertMany(reactions);
-  //await User.insertMany(users);
-  //await Thought.insertMany(thoughts);
-  //await Reactions.insertMany(reactions);
 
-  // loop through the saved applications, for each application we need to generate a application response and insert the application responses
+  const makeThought = () => {
+    thoughts.push({
+      thoughtText:genRandomSentence(10),
+      username:users[genRandomIndex(users)],
+      reactions: [reactions[genRandomIndex(reactions)]._id],
+    });
+  };
+
+
+  const reactionWords = [
+    'Doc',
+    'Grumpy',
+    'Happy',
+    'Sleepy',
+    'Bashful',
+    'Sneezy',
+    'Dopey',
+  ];
+  
+  for (let i = 0; i < reactionWords.length; i++) {
+    reactions.push({
+      reactionBody: reactionWords[genRandomIndex(reactionWords)],
+      username: users[genRandomIndex(users)],
+    });
+  }
+
+  await Reaction.collection.insertMany(reactions);
+
+  reactions.forEach(()=> makeThought());
+
+  await Thought.collection.insertMany(thoughts);
+
   console.table(users);
   console.table(thoughts);
   console.table(reactions)
+  console.timeEnd('seeding');
   console.info('Seeding complete! 🌱');
   process.exit(0);
 });

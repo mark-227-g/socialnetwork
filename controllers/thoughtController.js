@@ -1,4 +1,4 @@
-const { Thought } = require('../models');
+const { Reaction, Thought } = require('../models');
 module.exports = {
     // Get all thoughts
     async getAllThoughts(req, res) {
@@ -6,6 +6,7 @@ module.exports = {
         const thoughts = await Thought.find();
         res.json(thoughts);
       } catch (err) {
+        console.log("Err getAllThoughts: "+err);
         res.status(500).json(err);
       }
     },
@@ -22,6 +23,7 @@ module.exports = {
   
         res.json(thought);
       } catch (err) {
+        console.log("Err getThoughtById: "+err);
         res.status(500).json(err);
       }
     },
@@ -31,6 +33,7 @@ module.exports = {
       const thought = await Thought.create(req.body);
       res.json(thought);
     } catch (err) {
+      console.log("Err createThought: "+err);
       res.status(500).json(err);
     }
   },
@@ -49,7 +52,7 @@ module.exports = {
   
         res.json(thought);
       } catch (err) {
-        console.log(err);
+        console.log("err updateThought: "+err);
         res.status(500).json(err);
       }
     },
@@ -62,9 +65,11 @@ module.exports = {
         }
         res.json({ message: 'thought successfully deleted!' });
       } catch (err) {
+        console.log("Err deleteThought: "+err);
         res.status(500).json(err);
       }
     },
+    /*
     async addReaction(req, res) {
       try {
         const thought = await Thought.findOneAndUpdate(
@@ -79,6 +84,7 @@ module.exports = {
   
         res.json(thought);
       } catch (err) {
+        console.log("Err: "+err);
         res.status(500).json(err);
       }
     },
@@ -97,8 +103,9 @@ module.exports = {
   
         res.json(thought);
       } catch (err) {
+        console.log("Err: "+err);
         res.status(500).json(err);
       }
-    },
+    }, */
   };
   
