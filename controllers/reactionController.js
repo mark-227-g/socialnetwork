@@ -29,9 +29,11 @@ module.exports = {
   // create a new reaction
   async addReaction(req, res) {
     try {
-      const reaction = await Reaction.create(req);
+      const reaction = await Reaction.create(req.body);
+      console.log("reaction "+reaction);
+      console.log("thoughtId "+ req.params.thoughtId)
       const thought = await Thought.findOneAndUpdate(
-        { _id: req.params.thoughtId },
+        { _id: req.body.thoughtId },
         { $addToSet: { reactions: reaction._id } },
         { new: true }
       );
@@ -51,23 +53,19 @@ module.exports = {
   // create a new reaction
   async removeReaction(req, res) {
     try {
-      const reaction = await Reaction.create(req);
-      const thought = await Thought.findOneAndUpdate(
-        { _id: req.params.thoughtId },
-        { $addToSet: { reactions: reaction._id } },
-        { new: true }
-      );
+      const reaction = await Reaction.findOneAndRemove({ _id: req.params.reactionId });
 
-      if (!thought) {
+      if (!reaction) {
         return res
           .status(404)
-          .json({ message: 'Reaction created, but found no thought with that ID' });
+          .json({ message: 'No reaction with this id!'});
       }
 
-      res.json('Created the reaction 🎉');
+      res.json('Reaction successfully deleted!');
     } catch (err) {
-      console.log("err createReaction: "+err);
+      console.log("err removeReaction: "+err);
       res.status(500).json(err);
     }
-  }
+  },
+  
 };

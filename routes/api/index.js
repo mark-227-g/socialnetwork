@@ -7,4 +7,5 @@ router.use('/user', userRoutes);
 router.use('/thought', thoughtRoutes);
 router.use('/reaction', reactionRoutes);
 
+
 module.exports = router;

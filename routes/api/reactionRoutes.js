@@ -3,21 +3,20 @@ const {
     addReaction, 
     getReactions,
     getSingleReaction,
- // removeReaction,
+     removeReaction,
  // 
 } = require('../../controllers/reactionController');
 
 router
     .route('/')
-    .get(getReactions);
+    .get(getReactions)
+    .post(addReaction);
 router
     .route('/:reactionId')
-    .get(getSingleReaction);
-
-router
-    .route('/thought/:thoughtId/:reactionId')
-    .post(addReaction)
+    .get(getSingleReaction)
     .delete(removeReaction);
+    
+    
  // .post(addReaction);
 //  .delete(removeReaction);
 
