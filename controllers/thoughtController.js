@@ -1,4 +1,4 @@
-const { User, Thought } = require('../models');
+const { Thought } = require('../models');
 module.exports = {
     // Get all thoughts
     async getAllThoughts(req, res) {
@@ -64,10 +64,41 @@ module.exports = {
       } catch (err) {
         res.status(500).json(err);
       }
-    }
-
-
-
-
-
-}
+    },
+    async addReaction(req, res) {
+      try {
+        const thought = await Thought.findOneAndUpdate(
+          { _id: req.params.thoughtId },
+          { $addToSet: { reactions: req.body } },
+          { runValidators: true, new: true }
+        );
+  
+        if (!thought) {
+          return res.status(404).json({ message: 'No thought with this id!' });
+        }
+  
+        res.json(thought);
+      } catch (err) {
+        res.status(500).json(err);
+      }
+    },
+    // Remove application tag. This method finds the application based on ID. It then updates the tags array associated with the app in question by removing it's tagId from the tags array.
+    async removeReaction(req, res) {
+      try {
+        const thought = await Thought.findOneAndUpdate(
+          { _id: req.params.thoughtId },
+          { $pull: { reactions: { reactionId: req.params.reactionId } } },
+          { runValidators: true, new: true }
+        );
+  
+        if (!thought) {
+          return res.status(404).json({ message: 'No thought with this id!' });
+        }
+  
+        res.json(thought);
+      } catch (err) {
+        res.status(500).json(err);
+      }
+    },
+  };
+  
