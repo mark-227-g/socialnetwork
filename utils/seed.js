@@ -10,11 +10,13 @@ connection.once('open', async () => {
   await Thought.deleteMany({});
   await User.deleteMany({});
 
-  const users = [];
-  const thoughts = [];
-  const reactions = [];
+const users = [];
+const thoughts = [];
+const reactions = [];
 
-  for (let i = 0; i < 20; i++) {
+
+
+  for(let i = 0; i < 20; i++) {
     const name = genRandomName();
     users.push({
       name,
@@ -23,16 +25,28 @@ connection.once('open', async () => {
   }
 
   await User.collection.insertMany(users);
+  const newUsers = await User.find();
+  console.log("table")
+  console.table(newUsers);
 
-  const makeThought = () => {
-    thoughts.push({
+  await newUsers.forEach((user)=>{
+    console.log("userid "+ user._id)
+    try {
+    const newThought = new Thought({
       thoughtText:genRandomSentence(10),
-      username:users[genRandomIndex(users)],
-      reactions: [reactions[genRandomIndex(reactions)]._id],
+      username:user,
     });
-  };
-
-
+    thoughts.push(newThought);
+    user.thoughts.push(newThought);
+    user.save();
+  
+  }
+ catch (err) {
+  console.log("get foreach "+err);
+  res.status(500).json(err);
+}}
+  ) 
+  await Thought.collection.insertMany(thoughts);
   const reactionWords = [
     'Doc',
     'Grumpy',
@@ -42,7 +56,28 @@ connection.once('open', async () => {
     'Sneezy',
     'Dopey',
   ];
+
+  const reactionThoughts=await Thought.find();
+  await newUsers.forEach((user)=>{
+    try {
+    const newReaction = new Reaction({
+      reactionBody: reactionWords[genRandomIndex(reactionWords)],
+      username: user,
+    });
+    reactions.push(newReaction);
+  //  thoughts.push(newReaction);
+  //  user.thoughts.push(newThought);
+  //  user.save();
+    
   
+  }
+ catch (err) {
+  console.log("get foreach "+err);
+  res.status(500).json(err);
+}}
+  )
+  await Reaction.collection.insertMany(reactions);
+  /*
   for (let i = 0; i < reactionWords.length; i++) {
     reactions.push({
       reactionBody: reactionWords[genRandomIndex(reactionWords)],
@@ -57,10 +92,11 @@ connection.once('open', async () => {
   reactions.forEach(()=> makeThought());
   }
   await Thought.collection.insertMany(thoughts);
-
+*/
   console.table(users);
   console.table(thoughts);
-  console.table(reactions)
+  console.table(reactions);
+  
   console.timeEnd('seeding');
   console.info('Seeding complete! 🌱');
   process.exit(0);

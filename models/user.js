@@ -1,5 +1,5 @@
 const {Schema, model} = require('mongoose');
-const Thought = require('./thought');
+const Thought = require('../models');
 
 const userSchema = new Schema ({
     name: {
@@ -14,7 +14,10 @@ const userSchema = new Schema ({
         unique:true,
         match: [/.+\@.+\..+/,'Invalid email'],
     },
-    thoughts:[],
+    thoughts:[            {
+        type: Schema.Types.ObjectId,
+        ref: 'thought',
+      },],
     friends: [],
 },
 {
@@ -24,7 +27,9 @@ const userSchema = new Schema ({
     id:false,
 }
 );
-
+userSchema
+    .virtual('thoughtCount')
+    .get(function (){return this.thoughts.length;})
 userSchema
     .virtual('friendCount')
     .get(function (){return this.friends.length;})
