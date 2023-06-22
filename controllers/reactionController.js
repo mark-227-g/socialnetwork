@@ -52,14 +52,43 @@ module.exports = {
   },
   // create a new reaction
   async removeReaction(req, res) {
-    try {
-      const reaction = await Reaction.findOneAndRemove({ _id: req.params.reactionId });
+    try 
+    {
+      
+     // const thought = await Thought.findOne({ _id: req.body.thoughtId })
+   //   await Thought.updateOne(
+     //   {_id:req.params.thoughtId},
+     //   {$pull:{reactions:{_id:req.params.reactionId}}}
+        
+    //  )
+    const reaction = await Reaction.findOne({ _id: req.params.reactionId })
+    if (!reaction) {
+      return res.status(404).json({ message: 'No reaction with that ID' });
+    }
+    const thought = await Thought.updateOne(
+      { _id: req.body.thoughtId },
+      { $pull: { reactions: reaction._id } },
+     // { new: true }
+    );
+      if (!thought) {
+       return res.status(404).json({ message: 'No thought with that ID' });
+     }
 
+   //  thought.reactions.id({_id:req.params.reactionId}).deleteOne();
+   //  await thought.save();
+  //    thought.reactions.id(req.params.reactionId).deleteOne();
+      //const reaction = thought.reactions.id(req.params.reactionId).deleteOne();
+   //   
+    
+    await Reaction.findOneAndRemove({ _id: req.params.reactionId });
       if (!reaction) {
         return res
           .status(404)
           .json({ message: 'No reaction with this id!'});
       }
+      
+     // reaction.remove();
+    //  await thought.save();
 
       res.json('Reaction successfully deleted!');
     } catch (err) {
