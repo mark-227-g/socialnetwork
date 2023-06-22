@@ -52,8 +52,10 @@ connection.once('open', async () => {
 
   await Reaction.collection.insertMany(reactions);
 
+  for (let index = 0; index < 5; index++) {
+    
   reactions.forEach(()=> makeThought());
-
+  }
   await Thought.collection.insertMany(thoughts);
 
   console.table(users);
