@@ -15,9 +15,5 @@ router
     .route('/:reactionId')
     .get(getSingleReaction)
     .delete(removeReaction);
-    
-    
- // .post(addReaction);
-//  .delete(removeReaction);
 
 module.exports = router;

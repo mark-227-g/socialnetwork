@@ -2,6 +2,7 @@ const { Friend, User } = require('../models');
 
 
 module.exports = {
+/* ********* addFriend ****** */
 async addFriend(req,res) {
     try {
         console.log("userid "+req.params.userId)
@@ -22,6 +23,7 @@ async addFriend(req,res) {
   }
   
 },
+/* ******** remove Friend ********* */
 async removeFriend(req,res) {
     try {
       const user = await User.updateOne(
