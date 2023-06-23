@@ -26,14 +26,18 @@ async addFriend(req,res) {
 /* ******** remove Friend ********* */
 async removeFriend(req,res) {
     try {
+      
       const user = await User.updateOne(
         { _id: req.params.userId },
-        { $pull: { friends: req.body.friendId } });
+        { $pull: { friends: req.body.friendId  } },
+       // { new: true }
+      );
         if (!user) {
-          return res.status(404).json({ message: 'No user with that ID' });
-        }
+         return res.status(404).json({ message: 'No user with that ID' });
+       } 
+      
   
-        res.json(user);
+        res.json('friend successfully deleted!');
     }
  catch (err) {
     console.log("Err removeFriend: "+err);
