@@ -5,7 +5,7 @@ removeFriend,
 }= require('../../controllers/friendController');
 
 router
-    .route('/:friendId')
+    .route('/:userId')
     .post(addFriend)
     .delete(removeFriend);
 

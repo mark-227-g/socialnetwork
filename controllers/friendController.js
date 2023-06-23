@@ -4,14 +4,16 @@ const { Friend, User } = require('../models');
 module.exports = {
 async addFriend(req,res) {
     try {
-        console.log(req.params.friendId)
-        const user = await User.findOne({ _id: req.params.friendId })
-          .select('-__v');
+        console.log("userid "+req.params.userId)
+        const user = await User.findOne({ _id: req.params.userId });
+         
   
         if (!user) {
+          console.log("did not find friend "+user)
           return res.status(404).json({ message: 'No user with that ID' });
         }
-  
+        user.friends.push(req.body.friendId);
+        await user.save();
         res.json(user);
     }
  catch (err) {
@@ -22,10 +24,9 @@ async addFriend(req,res) {
 },
 async removeFriend(req,res) {
     try {
-        console.log(req.params.friendId)
-        const user = await User.findOne({ _id: req.params.friendId })
-          .select('-__v');
-  
+      const user = await User.updateOne(
+        { _id: req.params.userId },
+        { $pull: { friends: req.body.friendId } });
         if (!user) {
           return res.status(404).json({ message: 'No user with that ID' });
         }
@@ -33,7 +34,7 @@ async removeFriend(req,res) {
         res.json(user);
     }
  catch (err) {
-    console.log("Err addFriend: "+err);
+    console.log("Err removeFriend: "+err);
     res.status(500).json(err);
   }
 }
