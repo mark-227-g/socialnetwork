@@ -13,22 +13,20 @@ const reactionSchema = new Schema (
         default: Date.now,
     },
     username: {
-        type:String, 
-        require:true},
-    },
+        
+            type: Schema.Types.ObjectId,
+            ref: 'user',
+          
+    }
+},
     {
         toJSON: {
-            virtuals:true,
+            virtuals:false,
         },
         id:false,
-    }
+    },
 );
 reactionSchema
-.virtual('getsomething')
-// Getter
-.get(function () {
-  return `abc`;
-});
 
 const Reaction = model('reaction',reactionSchema);
 module.exports = Reaction;

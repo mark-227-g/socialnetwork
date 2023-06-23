@@ -16,7 +16,7 @@ const reactions = [];
 
 
 
-  for(let i = 0; i < 20; i++) {
+  for(let i = 0; i < 5; i++) {
     const name = genRandomName();
     users.push({
       name,
@@ -26,8 +26,8 @@ const reactions = [];
 
   await User.collection.insertMany(users);
   const newUsers = await User.find();
-  console.log("table")
-  console.table(newUsers);
+ // console.log("table")
+//  console.table(newUsers);
 
   await newUsers.forEach((user)=>{
     console.log("userid "+ user._id)
@@ -47,6 +47,7 @@ const reactions = [];
 }}
   ) 
   await Thought.collection.insertMany(thoughts);
+
   const reactionWords = [
     'Doc',
     'Grumpy',
@@ -57,7 +58,26 @@ const reactions = [];
     'Dopey',
   ];
 
-  const reactionThoughts=await Thought.find();
+    const reactionThoughts=await Thought.find();
+
+    await reactionThoughts.forEach((thought)=>{
+      try {
+        const newReaction = new Reaction({
+          reactionBody: reactionWords[genRandomIndex(reactionWords)],
+          username: newUsers[genRandomIndex(newUsers)],
+        });
+        reactions.push(newReaction);
+        thought.reactions.push(newReaction);
+        thought.save();
+      }
+      catch (err) {
+        console.log("get foreach "+err);
+        res.status(500).json(err);
+      }
+    })
+    await Reaction.collection.insertMany(reactions);
+    
+  /*
   await newUsers.forEach((user)=>{
     try {
     const newReaction = new Reaction({
@@ -65,18 +85,21 @@ const reactions = [];
       username: user,
     });
     reactions.push(newReaction);
+    console.log("thought for reaction "+reactionThoughts[2]._id)
+    reactionThoughts[2].reactions.push(newReaction._id);
+    reactionThoughts[2].save;
+    */
   //  thoughts.push(newReaction);
   //  user.thoughts.push(newThought);
   //  user.save();
-    
-  
+/*    
   }
  catch (err) {
   console.log("get foreach "+err);
   res.status(500).json(err);
 }}
   )
-  await Reaction.collection.insertMany(reactions);
+  await Reaction.collection.insertMany(reactions);*/
   /*
   for (let i = 0; i < reactionWords.length; i++) {
     reactions.push({
